@@ -4,19 +4,20 @@ variables:
   BUNDLE: "bundle"
   REPO: "./docker"
   TAG: '0.1'
+  IMG_REPO: 'harbor.httpsec.eu'
 
 stages:
   - build
 
 Build Rego package:
   stage: build
-  image: harbor.httpsec.eu/security/opa-build:0.1
+  image: ${IMG_REPO}/security/opa-build:0.1
   script:
     - cd ${REPO}
     - opa build --bundle --output ${BUNDLE}.tar.gz .
     - echo '{}' > manifest.conf
     - |
-      oras push harbor.httpsec.eu/docker-opa/${BUNDLE}:${TAG} \
+      oras push ${IMG_REPO}/docker-opa/${BUNDLE}:${TAG} \
         --config manifest.conf:application/vnd.oci.image.config.v1+json \
         ${BUNDLE}.tar.gz:application/vnd.oci.image.layer.v1.tar+gzip
   artifacts:
