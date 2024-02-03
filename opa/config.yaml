@@ -1,0 +1,23 @@
+
+# This file is a base configuration example for deploying the Docker OPA plugin
+#
+# Author: Denis Rendler <connect@rendler.net>
+# Docs: 
+#   https://www.openpolicyagent.org/docs/latest/configuration/#using-private-image-from-oci-repositories 
+#   https://www.openpolicyagent.org/docs/latest/docker-authorization/
+services:
+  # definition for using the Harbor repo to store policies
+  harbor:
+    url: https://harbor.httpsec.eu
+    type: oci
+    credentials:
+      bearer:
+        scheme: "basic"
+        token: "robot-docker-opa-{ROBOT_ACCOUNT}:{GENERATED_PASSWORD}"        # !!!TODO: MAKE SURE YOU CHANGE THIS BEFORE INSTALLING THE PLUGIN
+bundles:
+  authz:
+    service: harbor
+    resource: harbor.httpsec.eu/docker-opa/{BUNDLE_NAME}:{BUNDLE_VERSION}
+    polling:
+      min_delay_seconds: 60
+      max_delay_seconds: 120
